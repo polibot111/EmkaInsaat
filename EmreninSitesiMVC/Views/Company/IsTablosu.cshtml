@@ -1,0 +1,428 @@
+﻿@model SirketVM
+@{
+    ViewBag.Title = "IsTablosu";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+    string[] monthNames = (new System.Globalization.CultureInfo("tr-TR")).DateTimeFormat.MonthNames;
+    decimal? a = 0;
+    decimal? b = 0;
+
+}
+
+<h3>@ViewBag.Message</h3>
+<h3 style="margin:10px; colord;"> @ViewBag.Message </h3>
+@using (Html.BeginForm("IsTablosu", "Company", FormMethod.Get))
+{
+    <label style="margin:3px">Yıl:</label>
+    <select class="btn btn-info dropdown-toggle" name="yil" id="yil" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 5; i++)
+        {
+            <option value="@(2021+i)">@(2021+i)</option>
+        }
+    </select>
+    <label style="margin:3px">Ay:</label>
+    <select class="btn btn-info dropdown-toggle" name="ay" id="ay" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 12; i++)
+        {
+            <option value="@(i+1)">@monthNames[i]</option>
+        }
+    </select>
+    <button class="btn btn-primary">Tarih Ayarla</button>
+}
+
+
+<div>
+
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Müşteri</th>
+                <th>Açıklama</th>
+                <th>Kar</th>
+                <th>Maliyet</th>
+                <th>Ayrıntılar</th>
+                <th>Ekle/Çıkart</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.YapilanIss != null)
+            {
+                foreach (YapilanIs item in Model.YapilanIss)
+                {
+                    a += item.Kar;
+                    b += item.Maliyets.Sum(x => x.ToplamMaliyet);
+
+                    if (item.OdemeDurumu == OdemeDurumu.Odendi)
+                    {
+                        <tr style=" background-color: #bbffb7">
+                            <td>@item.SirketAdi</td>
+                            <td>@item.Aciklama</td>
+                            <td>@item.Kar</td>
+                            <td>@item.Maliyets.Sum(x => x.ToplamMaliyet)</td>
+                            <td><button class="btn btn-info" onclick="window.open('@Url.Action("AyrintiPenceresi", "Company",new { id =$"{item.ID}"})')"> Ayrıntılar </button></td>
+                            <td>
+                                <a href="/Company/UpdateYapilanIs/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
+
+                                <a href="/Company/DeleteIs/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
+
+                                <button data-toggle="collapse" data-target="#form_@item.ID" class=" btn btn-default">Maliyet/Ödeme Ekle</button>
+                            </td>
+                        </tr>
+                        <tr id="form_@item.ID" class="collapse">
+                            <td>@item.SirketAdi</td>
+                            <th> Maliyet Açıklama : <input type="text" style="width:80px;" id="form_maliyet_aciklama_@item.ID" /></th>
+                            <th> Maliyet Borç : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_borc_@item.ID" /></th>
+                            <th></th>
+                            <th> İlk Ödeme : <input type="number" min="0" step=".01" style="width:55px;" placeholder="0" id="form_maliyet_odeme_@item.ID" /> <button style="margin:4px;" onclick="CallPartial(@item.ID)" class="btn btn-primary"> Maliyet </button></th>
+                            <th> Ödeme Ekle : <input type="number" step=".01" min="0" style="width:55px;" id="form_odeme_tutari_@item.ID" /><button style="margin:4px;" onclick="OdemeEkle(@item.ID)" class="btn btn-success">Ödeme</button></th>
+                        </tr>
+                    }
+                    else if (item.OdemeDurumu == OdemeDurumu.Odenmedi)
+                    {
+                        <tr style=" background-color: #ffbaba;">
+                            <td>@item.SirketAdi</td>
+                            <td>@item.Aciklama</td>
+                            <td>@item.Kar</td>
+                            <td>@item.Maliyets.Sum(x => x.ToplamMaliyet)</td>
+                            <td><button class="btn btn-info" onclick="window.open('@Url.Action("AyrintiPenceresi", "Company",new { id =$"{item.ID}"})')"> Ayrıntılar </button></td>
+                            <td>
+                                <a href="/Company/UpdateYapilanIs/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
+
+                                <a href="/Company/DeleteIs/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a>
+                                <br />
+
+                                <button data-toggle="collapse" data-target="#form_@item.ID" class=" btn btn-default">Maliyet/Ödeme Ekle</button>
+                            </td>
+                        </tr>
+                        <tr id="form_@item.ID" class="collapse">
+                            <td>@item.SirketAdi</td>
+                            <th> Maliyet Açıklama : <input type="text" style="width:80px;" id="form_maliyet_aciklama_@item.ID" /></th>
+                            <th> Maliyet Borç : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_borc_@item.ID" /></th>
+                            <th></th>
+                            <th> İlk Ödeme : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_odeme_@item.ID" /> <button style="margin:4px;" onclick="CallPartial(@item.ID)" class="btn btn-primary"> Maliyet </button></th>
+                            <th> Ödeme Ekle : <input type="number" step=".01" min="0" style="width:55px;" id="form_odeme_tutari_@item.ID" /><button style="margin:4px;" onclick="OdemeEkle(@item.ID)" class="btn btn-success">Ödeme</button></th>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style=" background-color: #ffffaf;">
+                            <td>@item.SirketAdi</td>
+                            <td>@item.Aciklama</td>
+                            <td>@item.Kar</td>
+                            <td>@item.Maliyets.Sum(x => x.ToplamMaliyet)</td>
+                            <td><button class="btn btn-info" onclick="window.open('@Url.Action("AyrintiPenceresi", "Company",new { id =$"{item.ID}"})')"> Ayrıntılar </button></td>
+                            <td>
+                                <a href="/Company/UpdateYapilanIs/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
+
+                                <a href="/Company/DeleteIs/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a>
+                                <br />
+
+                                <button data-toggle="collapse" data-target="#form_@item.ID" class=" btn btn-default">Maliyet/Ödeme Ekle</button>
+                            </td>
+                        </tr>
+                        <tr id="form_@item.ID" class="collapse">
+                            <td>@item.SirketAdi</td>
+                            <th> Maliyet Açıklama : <input type="text" style="width:80px;" id="form_maliyet_aciklama_@item.ID" /></th>
+                            <th> Maliyet Borç : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_borc_@item.ID" /></th>
+                            <th></th>
+                            <th> İlk Ödeme : <input step=".01" type="number" min="0" style="width:55px;" placeholder="0" id="form_maliyet_odeme_@item.ID" /> <button style="margin:4px;" onclick="CallPartial(@item.ID)" class="btn btn-primary"> Maliyet </button></th>
+                            <th> Ödeme Ekle : <input type="number" step=".01" min="0" style="width:55px;" id="form_odeme_tutari_@item.ID" /><button style="margin:4px;" onclick="OdemeEkle(@item.ID)" class="btn btn-success">Ödeme</button></th>
+                        </tr>
+                    }
+
+                }
+            }
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><strong>Total Kar : @a</strong></td>
+                <td><strong>Total Maliyet : @b</strong></td>
+
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<h2 class="btn btn-danger" id="IsEkle">İş Ekle </h2>
+<div>
+    <div id="guncellebutton">
+    </div>
+    <div id="addbutton" style="margin:5px;">
+        <div id="AddWork">
+            @using (Html.BeginForm("IsTablosu", "Company", FormMethod.Post))
+            {
+                <h6>Şirket Adı</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.SirketAdi, new { @class = "form-control" })
+
+                <h6>Açıklama</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.Aciklama, new { @class = "form-control" })
+
+                <h6>Temsilcisi</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.Temsilcisi, new { @class = "form-control" })
+                <br />
+                @Html.DropDownListFor(x => x.YapilanIs.OdemeSekli, new SelectList(Enum.GetValues(typeof(OdemeSekli))), "Ödeme Şekli Seçin")
+
+                <h6>Alınan Ödeme</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.YapilanIsOdemes[0].Odeme, new { @class = "form-control", @type = "number", @min = "0" , @step = ".01" })
+                <br />
+                <hr />
+                <h2 style="text-align:center">Fature Ekle</h2>
+
+                <h6>Fatura No</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.FaturaNo, new { @class = "form-control" })
+
+                <h6>Fatura Fiyat</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.FaturaFiyat, new { @class = "form-control" })
+
+                <h6>Fatura Açıklama(İsteğe Bağlı)</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.FaturaAcıklama, new { @class = "form-control" })
+                <hr />
+                <br />
+                <hr />
+                <h2 style="text-align:center">Hakedis Ekle</h2>
+
+                <h6>Hakedis No</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.HakedisNo, new { @class = "form-control" })
+
+                <h6>Hakedis Fiyat</h6>
+                @Html.TextBoxFor(x => x.YapilanIs.HakedisFiyat, new { @class = "form-control" })
+                <hr />
+                <br />
+
+                <h2 id="Cek_Ekle" style="color:blue;cursor:pointer;">Çek Ekle</h2>
+                <div class="cek_ekle">
+                    <section class="buttons">
+                        <h2 class="btn btn-primary" id="CekForm"> Çek Ekle </h2> <h2 class="btn btn-danger" id="CekSil"> Çek Sil </h2>
+                    </section>
+                    <section id="cek">
+                        <section id="FirstCek">
+                            <div class="cekclass">
+                                <hr />
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>Çek No</h6>
+                                    @Html.TextBoxFor(x => x.Cek[0].CekNo, new { @class = "form-control", @style = "width: 100px" })
+                                </div>
+
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>Çek Tutar</h6>
+                                    @Html.TextBoxFor(x => x.Cek[0].Tutar, new { @class = "form-control", @style = "width: 75px" })
+                                </div>
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>Çek Alış Tarihi</h6>
+                                    @Html.TextBoxFor(x => x.Cek[0].AlisTarihi, new { @class = "form-control", @style = "width: 150px", @type = "date" })
+                                </div>
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>Çek Tahsilat Tarihi</h6>
+                                    @Html.TextBoxFor(x => x.Cek[0].TahsilatTarihi, new { @class = "form-control", @style = "width: 150px", @type = "date" })
+                                </div>
+                                <div>
+                                    @Html.DropDownListFor(x => x.Cek[0].CekSenet, new SelectList(Enum.GetValues(typeof(CekSenet))), "Tür Seçin", new { @style = "padding:5px;" })
+                                </div>
+
+                            </div>
+                        </section>
+                    </section>
+                </div>
+                <h2 id="Malz_Ekle" style="color:blue;cursor:pointer;"> Gider Ekle </h2>
+                <div class="malz_ekle">
+                    <section class="buttons">
+                        <h2 class="btn btn-primary" id="MalzForm"> Gider Formu Ekle </h2> <h2 class="btn btn-danger" id="MalzSil"> Gider Formu Sil </h2>
+                    </section>
+                    <section id="malz">
+                        <section id="FirstMalz">
+                            <div class="malzclass">
+                                <hr />
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>Gider Başlığı</h6>
+                                    @Html.TextBoxFor(x => x.YapilanIs.Maliyets[0].Aciklama, new { @class = "form-control", @style = "width: 150px" })
+                                </div>
+
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>Gider Borç</h6>
+                                    @Html.TextBoxFor(x => x.YapilanIs.Maliyets[0].ToplamMaliyet, new { @class = "form-control", @style = "width: 75px" })
+                                </div>
+                                <div style="margin:4px; display:inline-block;">
+                                    <h6>İlk Ödeme</h6>
+                                    @Html.TextBoxFor(x => x.YapilanIs.Maliyets[0].MaliyetOdemes[0].Odeme, new { @class = "form-control", @style = "width: 75px" })
+                                </div>
+                            </div>
+                        </section>
+                    </section>
+                </div>
+                <br />
+                <button class="btn btn-success">Yolla</button>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    // Güncelleme Butonu
+    var YapilanIsGuncelle = function (idi) {
+        $.ajax({
+            type: "GET",
+            url: "/Company/UpdateYapilanIs",
+            data: {
+                id: idi
+            },
+            success: function (response) {
+                $("#addbutton").hide();
+                $("#guncellebutton").html(response);
+            }
+        });
+    }
+    //Gider ekleme Butonu
+    var CallPartial = function (idi) {
+        var deg = $(`#form_maliyet_aciklama_${idi}`).val();
+        var borcu = $(`#form_maliyet_borc_${idi}`).val();
+        var ilkborcu = $(`#form_maliyet_odeme_${idi}`).val();
+        $.ajax({
+            type: "POST",
+            url: "/Company/MaliyetEkle",
+            data: {
+                id: idi,
+                deger: deg,
+                borc: borcu,
+                ilkodeme: ilkborcu
+            },
+            success: function (response) {
+                location.reload();
+
+            }
+        });
+    }
+    // Ödeme ekleme Butonu
+    var OdemeEkle = function (idi) {
+        var deg = $(`#form_odeme_tutari_${idi}`).val();
+        $.ajax({
+            type: "POST",
+            url: "/Company/OdemeEkleme",
+            data: {
+                id: idi,
+                deger: deg,
+            },
+            success: function (response) {
+                location.reload();
+
+            }
+        });
+    }
+    $(function () {
+
+        var cekekleyecek;
+        var malzekleyecek;
+        var a = 0;
+        var c = 0;
+        //--------- Açılış Section -----------
+        $(document).ready(function () {
+            cekekleyecek = $("#FirstCek").html();
+            malzekleyecek = $("#FirstMalz").html();
+            $("#AddWork").hide();
+            $(".cek_ekle").hide();
+            $(".malz_ekle").hide();
+            $("#FirstCek").remove();
+            $("#FirstMalz").remove();
+
+        });
+        //---------- İş Ekleme ---------------
+        $("#IsEkle").click(function () {
+            $("#AddWork").toggle("fast");
+        });
+        //---------- Çek Section -------------
+        $("#Cek_Ekle").click(function () {
+            $(".cek_ekle").toggle("fast");
+        });
+        $("#CekForm").click(function () {
+            $("#cek").append(cekekleyecek);
+            $("#cek .cekclass:last input").each(function () {
+                var cek = $(this).attr("id");
+                if (cek == "Cek_0__CekNo") {
+                    $(this).attr({
+                        "name": `Cek[${a}].CekNo`,
+                        "id": `Cek_${a}__CekNo`
+                    });
+                }
+                else if (cek == "Cek_0__Tutar") {
+                    $(this).attr({
+                        "name": `Cek[${a}].Tutar`,
+                        "id": `Cek_${a}__Tutar`
+                    });
+                }
+                else if (cek == "Cek_0__AlisTarihi") {
+                    $(this).attr({
+                        "name": `Cek[${a}].AlisTarihi`,
+                        "id": `Cek_${a}__AlisTarihi`
+                    });
+                }
+                else {
+                    $(this).attr({
+                        "name": `Cek[${a}].TahsilatTarihi`,
+                        "id": `Cek_${a}__TahsilatTarihi`
+                    });
+                }
+            });
+            a = a + 1;
+        });
+        $(".cek_ekle .buttons").on("click", "#CekSil", function () {
+            $("#cek div:last").parent().remove();
+            if (a > 0) {
+                a = a - 1;
+            }
+
+        });
+
+        //-------- Malzeme Section --------
+        $("#Malz_Ekle").click(function () {
+            $(".malz_ekle").toggle("fast");
+        });
+        $(".malz_ekle .buttons").on("click", "#MalzSil", function () {
+            $("#malz div:last").parent().remove();
+            if (c > 0) {
+                c = c - 1;
+            }
+
+
+        });
+        $("#MalzForm").click(function () {
+            $("#malz").append(malzekleyecek);
+            $("#malz .malzclass:last input").each(function () {
+                var malz = $(this).attr("id");
+                if (malz == "YapilanIs_Maliyets_0__Aciklama") {
+                    $(this).attr({
+                        "name": `YapilanIs.Maliyets[${c}].Aciklama`,
+                        "id": `YapilanIs_Maliyets_${c}__Aciklama`
+                    });
+
+                }
+                else if (malz == "YapilanIs_Maliyets_0__ToplamMaliyet") {
+                    $(this).attr({
+                        "name": `YapilanIs.Maliyets[${c}].ToplamMaliyet`,
+                        "id": `YapilanIs_Maliyets_${c}__ToplamMaliyet`
+                    });
+
+                }
+                else {
+                    $(this).attr({
+                        "name": `YapilanIs.Maliyets[${c}].MaliyetOdemes[0].Odeme`,
+                        "id": `YapilanIs_Maliyets_${c}__MaliyetOdemes_0__Odeme`
+                    });
+
+                }
+            });
+            c = c + 1;
+        });
+
+
+
+
+    });
+
+
+
+</script>

@@ -1,0 +1,117 @@
+﻿@model SirketVM
+@{
+    ViewBag.Title = "UpdateYapilanIs";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+}
+
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("UpdateYapilanIs", "Company", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.YapilanIs.ID)
+    <h6>Şirket Adı</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.SirketAdi, new { @class = "form-control" })
+
+    <h6>Açıklama</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.Aciklama, new { @class = "form-control" })
+
+    <h6>Temsilcisi</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.Temsilcisi, new { @class = "form-control" })
+    <br />
+    @Html.DropDownListFor(x => x.YapilanIs.OdemeSekli, new SelectList(Enum.GetValues(typeof(OdemeSekli))), "Döviz Türü")
+    <br />
+    @Html.DropDownListFor(x => x.YapilanIs.OdemeDurumu, new SelectList(Enum.GetValues(typeof(OdemeDurumu))), "Ödeme Durumu")
+
+    <h6>Alınan Ödeme</h6>
+    for (int i = 0; i < Model.YapilanIs.YapilanIsOdemes.Count; i++)
+    {
+        @Html.TextBoxFor(x => x.YapilanIs.YapilanIsOdemes[i].Odeme, new { @class = "form-control", @type = "number", @min = "0" }) Model.YapilanIs.YapilanIsOdemes[i].CreatedTime.ToString("dd/MM/yyyy");
+        <br />
+    }
+    <hr />
+    <h2 style="text-align:center">Fature Güncelleme</h2>
+
+    <h6>Fatura No</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.FaturaNo, new { @class = "form-control" })
+
+    <h6>Fatura Fiyat</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.FaturaFiyat, new { @class = "form-control" })
+
+    <h6>Fatura Açıklama(İsteğe Bağlı)</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.FaturaAcıklama, new { @class = "form-control" })
+    <hr />
+    <br />
+    <hr />
+    <h2 style="text-align:center">Hakedis Güncelleme</h2>
+
+    <h6>Hakedis No</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.HakedisNo, new { @class = "form-control" })
+
+    <h6>Hakedis Fiyat</h6>
+    @Html.TextBoxFor(x => x.YapilanIs.HakedisFiyat, new { @class = "form-control" })
+    <hr />
+    <br />
+
+    <h2 id="Cek_Ekle" style="color:blue;cursor:pointer;">Çek Güncelle</h2>
+    <div class="cek_ekle">
+        <section id="cek">
+            <section id="FirstCek">
+                <div class="cekclass">
+                    <hr />
+
+                    @for (int i = 0; i < Model.YapilanIs.Cek.Count; i++)
+                    {
+                        <div style="margin:4px; display:inline-block;">
+                            <h6>Çek No</h6>
+                            @Html.TextBoxFor(x => x.YapilanIs.Cek[i].CekNo, new { @class = "form-control", @style = "width: 100px" })
+                        </div>
+
+                        <div style="margin:4px; display:inline-block;">
+                            <h6>Çek Tutar</h6>
+                            @Html.TextBoxFor(x => x.YapilanIs.Cek[i].Tutar, new { @class = "form-control", @style = "width: 75px" })
+                        </div>
+                        <div style="margin:4px; display:inline-block;">
+                            <h6>Çek Alış Tarihi</h6>
+                            @Html.TextBoxFor(x => x.YapilanIs.Cek[i].AlisTarihi, new { @class = "form-control", @style = "width: 150px", @type = "date", @placeholder = $"{Model.YapilanIs.Cek[i].AlisTarihi}" })
+                        </div>
+                        <div style="margin:4px; display:inline-block;">
+                            <h6>Çek Tahsilat Tarihi</h6>
+                            @Html.TextBoxFor(x => x.YapilanIs.Cek[i].TahsilatTarihi, new { @class = "form-control", @style = "width: 150px", @type = "date", @placeholder = $"{Model.YapilanIs.Cek[i].TahsilatTarihi}" })
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(x => x.YapilanIs.Cek[i].CekSenet, new SelectList(Enum.GetValues(typeof(CekSenet))), $"{Model.YapilanIs.Cek[i].CekSenet}", new { @style = "padding:5px;" })
+                        </div>
+                    }
+
+
+                </div>
+            </section>
+        </section>
+    </div>
+    <h2 id="Malz_Ekle" style="color:blue;cursor:pointer;"> Gider Güncelle </h2>
+    <div class="malz_ekle">
+        <section id="malz">
+            <section id="FirstMalz">
+                @for (int i = 0; i < Model.YapilanIs.Maliyets.Count; i++)
+                {
+                    <div class="malzclass">
+                        <hr />
+                        <div style="margin:4px; display:inline-block;">
+                            <h6>Gider Başlığı</h6>
+                            @Html.TextBoxFor(x => x.YapilanIs.Maliyets[i].Aciklama, new { @class = "form-control", @style = "width: 150px" })
+                        </div>
+
+                        <div style="margin:4px; display:inline-block;">
+                            <h6>Gider Borç</h6>
+                            @Html.TextBoxFor(x => x.YapilanIs.Maliyets[i].ToplamMaliyet, new { @class = "form-control", @style = "width: 75px" })
+                        </div>
+                    </div>
+                }
+            </section>
+        </section>
+    </div>
+    <br />
+    <button class="btn btn-success">Yolla</button>
+}
+
+

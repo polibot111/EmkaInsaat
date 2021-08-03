@@ -1,0 +1,91 @@
+﻿@model MailGonder
+@{
+    ViewBag.Title = "AnaSayfaMail";
+    Layout = "~/Views/Shared/IntsizHome.cshtml";
+}
+
+<section class="contact_our" id="contactus">
+    <div class="content_our">
+        <h2>Teklif Alın</h2>      
+        <p> Çalışmalarınız bizlere gönderebilir. Teklif alabilirsiniz. </p>
+    </div>
+    <div class="container_our">
+        <div class="contactInfo_our">
+            <div class="box_our">
+                <div class="icon">
+
+                    <img src="~/OuterTools/Images/Form/address-icon-1735.png" />
+                </div>
+                <div class="text_our">
+                    <h3>Adres</h3>
+                    <p>Atatürk Caddesi ,<br /> Sapanbağları Mahallesi, <br> İstanbul/Pendik </p>
+                </div>
+            </div>
+            <div class="box_our">
+                <div class="icon">
+
+                    <img src="~/OuterTools/Images/Form/kisspng-computer-icons-mobile-phones-telephone-call-icon-d-phone-icon-5abf145b7f8de6.5771346015224720275225.png" />
+                </div>
+                <div class="text_our">
+                    <h3>Numaramız</h3>
+                    <p>0216-499-78-79 </p>
+                </div>
+            </div>
+            <div class="box_our">
+                <div class="icon">
+                    <img src="~/OuterTools/Images/Form/kisspng-ipma-email-telephone-message-email-icon-5acf36458d39e5.4305648115235292855785.png" />
+                </div>
+                <div class="text_our">
+                    <h3>Email</h3>
+                    <p>kchnfrkn@gmail.com </p>
+                </div>
+            </div>
+        </div>
+        <div class="contactForm_our">
+            @using (Html.BeginForm("IntDeneme", "Home", FormMethod.Post))
+            {
+            <form>
+                <h2>Teklif Gönder</h2>
+                <h2>@ViewBag.MailGonderildi</h2>
+                <div class="inputBox">
+                    @Html.TextBoxFor(x => x.FullName, new { required = "required" })
+                    <span>Tam Adınız</span>
+                    <br />
+                    @Html.ValidationMessageFor(x => x.FullName)
+                    @*@Html.TextBox("name", null, new { required = "required" })*@
+                    @*<input type="text" name="" required="required" />*@
+
+                </div>
+                <div class="inputBox">
+                    @Html.TextBoxFor(x => x.Number, new { required = "required" })
+                    @*@Html.TextBox("number", null, new { required = "required" })*@
+                    @*<input type="text" name="" required="required" />*@
+                    <span>Numaranız(İsteğe Bağlı)</span>
+                </div>
+                <div class="inputBox">
+                    @Html.TextBoxFor(x => x.Maili, new { required = "required" })
+                    <span>Email</span>
+                    <br />
+                    @Html.ValidationMessageFor(x => x.Maili)
+                    @*@Html.TextBox("mail", null, new { required = "required" })*@
+                    @*<input type="text" name="" required="required" />*@
+
+                </div>
+                <div class="inputBox">
+                    @Html.TextAreaFor(x => x.Description, new { required = "required" }) <span>Teklifinizi yazın...</span>
+                    <br />
+                    @Html.ValidationMessageFor(x => x.Description)
+                    @*@Html.TextArea("cont", null, new { required = "required" })*@
+                    @*<textarea required="required"></textarea>*@
+
+                </div>
+                <div class="inputBox">
+                    <input type="submit" name="" value="Gönder" />
+                </div>
+            </form>
+            }
+
+        </div>
+    </div>
+
+</section>

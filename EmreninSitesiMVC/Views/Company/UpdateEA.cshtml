@@ -1,0 +1,42 @@
+﻿@model EAVM
+
+
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("UpdateEA", "Company", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.SingleEA.ID)
+    <div>
+        <label>Borç Türü</label>
+        <br />
+        @Html.DropDownListFor(x => x.SingleEA.BorcTuru, new SelectList(Enum.GetValues(typeof(BorcTuru))), $"{Model.SingleEA.BorcTuru}", new { @style = "padding:5px;" })
+    </div>
+    <br />
+    <div>
+        <label>Borç Kime</label>
+        <br />
+        @Html.TextBoxFor(x => x.SingleEA.Kime, new { @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <label>Açıklama</label>
+        @Html.TextBoxFor(x => x.SingleEA.Aciklama, new { @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <label>Borç</label>
+        @Html.TextBoxFor(x => x.SingleEA.Borc, new { @type = "number", @class = "form-control", @placeholder = $"{Model.SingleEA.Borc}",  @min = "0", @step = ".01" })
+    </div>
+    <br />
+    <div>
+        @for (int i = 0; i < Model.SingleEA.EABorcOdemes.Count; i++)
+        {
+            @Html.TextBoxFor(x=>x.SingleEA.EABorcOdemes[i].Odeme, new { @type = "number", @class = "form-control", @placeholder = $"{Model.SingleEA.EABorcOdemes[i].Odeme}", @min = "0", @step = ".01" }) 
+        }
+    </div>
+
+    <br />
+    <div>
+        <button class="btn btn-primary"> Güncelle </button>
+    </div>
+}

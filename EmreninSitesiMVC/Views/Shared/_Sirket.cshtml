@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Emka İnşaat Muhasebe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Squada+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+    @*https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css*@
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        table {
+            margin: 20px 0 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+        #mySidebar #doviz{
+            margin:0 0 0 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+        <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+        <a href="/Company/AnaSayfa" class="w3-bar-item w3-button">Şirket Ana Sayfa</a>
+        <a href="/Company/IsTablosu" class="w3-bar-item w3-button">İşler Tablosu</a>
+        <a href="/Company/MaliyetTablosu" class="w3-bar-item w3-button">Maliyet Tablosu</a>
+        <a href="/Company/EA" class="w3-bar-item w3-button">EA Özel Harcama Tablosu</a>
+        <a href="/Company/Cek" class="w3-bar-item w3-button">Çek/Senet Tablosu</a>
+        <a href="/Company/SamimiyetTablosu" class="w3-bar-item w3-button">Samimiyet Tablosu</a>
+        <ul id="doviz">
+            
+        </ul>
+    </div>
+
+
+    <!-- Page Content -->
+    <div class="w3-teal">
+        <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+
+
+
+
+
+
+
+    <script>
+
+        let dolar;
+        let euro;
+        const buttons = document.querySelector("#doviz"); 
+
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function getExternalAPI() {
+            fetch("https://finans.truncgil.com/today.json")
+                .then(response => response.json())
+                .then(data => {
+                    dolar = data.USD.Alış;
+                    euro = data.EUR.Alış;
+                })
+                .catch(err => console.log(err));
+        }
+        getExternalAPI();
+
+        function w3_open() {
+            document.getElementById("mySidebar").style.display = "block";
+            buttons.innerHTML = `<li>Dolar: ${dolar}</li><li>Euro: ${euro}</li>`
+        }
+
+        function w3_close() {
+            document.getElementById("mySidebar").style.display = "none";
+            buttons.innerHTML = `<li></li><li></li>`
+        }
+
+       
+
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "pagingType": "full_numbers"
+            });
+            $('#doviz').html(``)
+        });
+
+       
+
+    </script>
+
+</body>
+</html>

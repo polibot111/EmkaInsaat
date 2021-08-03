@@ -1,0 +1,73 @@
+﻿@model AppUserVM
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!--webfonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text.css' />
+    <!--//webfonts-->
+</head>
+
+<body>
+    <div style="margin:10px 0 0 0">
+
+
+        <div class="container">
+            <div>
+                <p style="color:red; font-size:15px; border-bottom:4px;">@ViewBag.Message</p>
+                <p style="color:red; font-size:15px; border-bottom:4px;">@ViewBag.Yanlis</p>
+                <p style="color:lawngreen; font-size:15px; border-bottom:4px;">@ViewBag.MailOnay</p>
+            </div>
+
+        </div>
+
+        @using (Html.BeginForm("Login", "Admin", FormMethod.Post))
+        {
+            <div>
+                <strong>ID</strong>
+            </div>
+            <div>
+                @Html.TextBoxFor(x => x.AppUser.UserName)
+            </div>
+
+            <div> <strong>Şifre</strong></div>
+            <div>
+                @Html.PasswordFor(x => x.AppUser.Password)
+            </div>
+            <br />
+            <div>
+                @Html.ActionLink("Şifremi Unuttum", "Forget", "Admin")
+            </div>
+            <br />
+            <div>
+                <button class="btn btn-primary" value="1" name="panel" id="panel">
+                    Panel Giriş
+                </button><br />
+                <button style="margin:10px 0 0 0" class="btn btn-primary" value="2" name="panel" id="panel">
+                    Muhasebe Giriş
+                </button>
+            </div>
+        }
+    </div>
+
+          
+
+</body>
+</html>
+
+
+
+
+
+
+
+

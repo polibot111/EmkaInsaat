@@ -1,0 +1,272 @@
+﻿@model EAVM
+@{
+    ViewBag.Title = "EA";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+    decimal? borc = 0;
+    decimal? odeme = 0;
+    string[] monthNames = (new System.Globalization.CultureInfo("tr-TR")).DateTimeFormat.MonthNames;
+}
+
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("EA", "Company", FormMethod.Get))
+{
+    <label style="margin:3px">Yıl:</label>
+    <select class="btn btn-info dropdown-toggle" name="yil" id="yil" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 5; i++)
+        {
+            <option value="@(2021+i)">@(2021+i)</option>
+        }
+    </select>
+    <label style="margin:3px">Ay:</label>
+    <select class="btn btn-info dropdown-toggle" name="ay" id="ay" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 12; i++)
+        {
+            <option value="@(i+1)">@monthNames[i]</option>
+        }
+    </select>
+    <label style="margin:3px">Tür Belirle:</label>
+    <select class="btn btn-info dropdown-toggle" name="tur" id="tur" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        <option value="1">Araba</option>
+        <option value="2">Kişi</option>
+        <option value="3">Diğer</option>
+    </select>
+    <button class="btn btn-primary">Tarih Ayarla</button>
+}
+
+
+<div>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." class="form-control" title="Type in a name" style="width:50%; margin:10px 0 10px 0;">
+    <table id="myTable" width="100%">
+
+
+        <thead>
+            <tr>
+                <th>Borç Kime</th>
+                <th>Gider Sebebi</th>
+                <th>Ödenen Borç Listesi</th>
+                <th>Toplam Borç</th>
+                <th>Güncel Borç</th>
+                <th>Güncelle / Sil</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (Model.ListEA.Count != 0)
+            {
+
+                foreach (EABorc item in Model.ListEA)
+                {
+                    decimal? z = 0;
+
+                    foreach (EABorcOdeme d in item.EABorcOdemes)
+                    {
+                        z += d.Odeme;
+
+                    }
+
+
+                    if (item.OdemeDurumu == OdemeDurumu.Odendi)
+                    {
+
+                        <tr id="stun_@item.ID" data-toggle="odeme_@item.ID" style=" background-color: #bbffb7;
+                                                ">
+                            <td>@item.Kime</td>
+
+                            <td>@item.Aciklama</td>
+
+                            <td style="overflow:auto;">
+                                <button class="btn btn-primary" data-toggle="collapse" data-target="#odeme_@item.ID"> Göster </button>
+                            </td>
+
+                            <td>@item.Borc</td>
+
+                            <td>0</td>
+
+
+
+                            <td>
+
+                                <button class="btn btn-success" onclick="UpdateEA(@item.ID)" style="margin:3px">Güncelle</button>
+
+                                <a href="/Company/DeleteEA/@item.ID " class="btn btn-danger" style=" margin:3px;">Sil</a>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="odeme_@item.ID" style="margin:5px; background-color:#d8d8d8">
+                            <td>Göster</td>
+                            <td>
+                                @foreach (EABorcOdeme d in item.EABorcOdemes)
+                                {
+                                    @($"{d.Odeme} : {d.Tarih.ToString("dd/MM/yyyy")}")<br />
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                    else if (item.OdemeDurumu == OdemeDurumu.Odenmedi)
+                    {
+                        foreach (EABorcOdeme d in item.EABorcOdemes)
+                        {
+                            z += d.Odeme;
+                        }
+                        <tr id="stun_@item.ID" data-toggle="odeme_@item.ID" style=" background-color: #ffbaba;
+">
+                            <td>@item.Kime</td>
+
+                            <td>@item.Aciklama</td>
+
+                            <td style="overflow:auto;">
+                                -
+                            </td>
+
+                            <td>@item.Borc</td>
+
+                            <td>@item.Borc <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="@item.ID" /> <button onclick="CallPartial(@item.ID)" class="btn btn-info">Öde</button></td>
+
+                            <td>
+                                <button class="btn btn-success" onclick="UpdateEA(@item.ID)" style="margin:3px">Güncelle</button>
+
+                                <a href="/Company/DeleteEA/@item.ID " class="btn btn-danger" style=" margin:3px">Sil</a>
+                            </td>
+
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr id="stun_@item.ID" data-toggle="odeme_@item.ID" style=" background-color: #ffffaf;
+">
+                            <td>@item.Kime</td>
+
+                            <td>@item.Aciklama</td>
+                            <td style="overflow:auto;  max-height:5px;">
+                                <button class="btn btn-primary" data-toggle="collapse" data-target="#odeme_@item.ID"> Göster </button>
+                            </td>
+                            <td>@item.Borc</td>
+                            <td>@(item.Borc - z)<input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="@item.ID" /> <button onclick="CallPartial(@item.ID)" class="btn btn-info">Öde</button></td>
+                            <td>
+                                <button class="btn btn-success" onclick="UpdateEA(@item.ID)" style="margin:3px">Güncelle</button>
+
+
+                                <a href="/Company/DeleteEA/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a>
+                            </td>
+                        </tr>
+
+                        <tr class="collapse" id="odeme_@item.ID" style="margin:5px; background-color:#d8d8d8">
+                            <td>Göster</td>
+                            <td>
+                                @foreach (EABorcOdeme d in item.EABorcOdemes)
+                                {
+                                    @($"{d.Odeme} : {d.Tarih.ToString("dd/MM/yyyy")}")<br />
+                                }
+                            </td>
+
+                        </tr>
+
+
+                    }
+
+                    borc += item.Borc - z;
+                    odeme += z;
+
+                }
+
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Total Borç : @borc </th>
+                <th>Total Ödeme: @odeme </th>
+
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<button class="btn btn-dark" id="gizle">Ödeme Ekle</button>
+<div id="funtable">
+    <div id="guncellebutton">
+    </div>
+    <div id="addbutton" style="border:1px solid #007ee5; margin:5px; padding:5px;">
+        <h2 style="color:#007ee5;">Ekleme Sayfası</h2>
+        @using (Html.BeginForm("EA", "Company", FormMethod.Post))
+        {
+            <div>
+                <label>Borç Kime</label>
+                <br />
+                @Html.DropDownListFor(x => x.SingleEA.BorcTuru, new SelectList(Enum.GetValues(typeof(BorcTuru))), "Kişi Seçiniz", new { @style = "padding:5px;" })
+            </div>
+            <br />
+            <div>
+                <label>Borçlu Olunan Kişi/Araba İse Plaka</label>
+                @Html.TextBoxFor(x => x.SingleEA.Kime, new { @class = "form-control" })
+            </div>
+            <br />
+            <div>
+                <label>Açıklama</label>
+                @Html.TextBoxFor(x => x.SingleEA.Aciklama, new { @class = "form-control" })
+            </div>
+            <br />
+            <div>
+                <label>Borç</label>
+                @Html.TextBoxFor(x => x.SingleEA.Borc, new { @type = "number", @class = "form-control", placeholder = "0", @min = "0" })
+            </div>
+            <br />
+            <div>
+                <label>Odenme</label>
+                @Html.TextBoxFor(x => x.SingleOdeme.Odeme, new { @class = "form-control", @type = "number", @min = "0" })
+            </div>
+
+            <br />
+            <div>
+                <button class="btn btn-primary">Tabloya Ekle</button>
+            </div>
+
+        }
+    </div>
+</div>
+
+
+<script>
+
+    var CallPartial = function (idi) {
+        var deg = $(`#${idi}`).val();
+        $.ajax({
+            type: "POST",
+            url: "/Company/PartialTakip",
+            data: {
+                id: idi,
+                deger: deg
+            },
+            success: function (response) {
+                location.reload();
+
+            }
+        });
+
+    }
+    var UpdateEA = function (idi) {
+        $.ajax({
+            type: "GET",
+            url: "/Company/UpdateEA",
+            data: {
+                id: idi
+            },
+            success: function (response) {
+                $("#addbutton").hide();
+                $("#guncellebutton").html(response);
+            }
+        });
+    }
+
+    $(function () {
+
+
+        $("#gizle").click(function () {
+            $("#guncellebutton").hide();
+            $("#addbutton").toggle("fast");
+        });
+    });
+</script>

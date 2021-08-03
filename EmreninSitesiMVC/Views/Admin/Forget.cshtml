@@ -1,0 +1,22 @@
+﻿@model AppUserVM
+@{
+    ViewBag.Title = "Forget";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 style="color:red;">@ViewBag.Gonder</h1>
+@using (Html.BeginForm("Forget", "Admin", FormMethod.Post))
+{
+    <div>
+        Email
+    </div>
+    <div>
+        @Html.TextBoxFor(x => x.AppUser.Email);
+    </div>
+    <button>
+        Gönder
+    </button>
+}
+
+
+

@@ -1,0 +1,59 @@
+﻿@model CekVM
+@{
+    ViewBag.Title = "UpdateCek";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+}
+
+<h3>@ViewBag.Message</h3>
+
+<h2 style="color:#007ee5;">Ekleme Sayfası</h2>
+@using (Html.BeginForm("UpdateCek", "Company", FormMethod.Post))
+{
+    @Html.HiddenFor(x=>x.Cek.ID)
+<div>
+    <label>İş Seçin</label>
+    <br />
+    <select class="btn btn-info dropdown-toggle" name="id" id="id">
+        <option value="0">@(Model.Cek.YapilanIs.SirketAdi + " " + Model.Cek.YapilanIs.Aciklama)</option>
+        @foreach (YapilanIs item in Model.YapilanIss)
+        {
+            <option value="@item.ID">@(item.SirketAdi + " " + item.Aciklama)</option>
+        }
+    </select>
+    <br />
+    <br />
+    <div>
+        <label>Türünü Seçin</label><br />
+        @Html.DropDownListFor(x => x.Cek.CekSenet, new SelectList(Enum.GetValues(typeof(CekSenet))), "Tür Seçin", new { @style = "padding:5px;", @class = "btn btn-warning dropdown-toggle" })
+    </div>
+    <br />
+    <div>
+        <label>Numarası</label>
+        @Html.TextBoxFor(x => x.Cek.CekNo, new { @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <label>Alım Tarihi</label>
+        @Html.TextBoxFor(x => x.Cek.AlisTarihi, new { @class = "form-control", @type = "date" })
+    </div>
+    <br />
+    <div>
+        <label>Tahsilat Tarihi</label>
+        @Html.TextBoxFor(x => x.Cek.TahsilatTarihi, new { @type = "date", @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <label>Odenme</label>
+        @Html.TextBoxFor(x => x.Cek.Tutar, new { @class = "form-control", @type = "number", @min = "0" })
+    </div>
+    <div>
+        <label>Tahsilat Durumu</label><br />
+        @Html.DropDownListFor(x => x.Cek.TahsilDurumu, new SelectList(Enum.GetValues(typeof(TahsilDurumu))), "Tür Seçin", new { @style = "padding:5px;", @class = "btn btn-warning dropdown-toggle" })
+    </div>
+    <br />
+    <div>
+        <button class="btn btn-primary">Güncelle</button>
+    </div>
+</div>
+}
+

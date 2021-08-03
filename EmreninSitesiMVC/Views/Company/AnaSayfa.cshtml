@@ -1,0 +1,64 @@
+﻿@model AnaSayfaVM
+@{
+    ViewBag.Title = "AnaSayfa";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+}
+
+<h3>@ViewBag.Message</h3>
+<h2 style="text-align:center">Tahsilat Tarihi Yaklaşan Belgeler</h2>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>Çek/Senet No</td>
+            <td>Müşteri</td>
+            <td>Tutar</td>
+            <td>Geri Sayım</td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CekTarihs.Count != 0)
+        {
+            foreach (CekTarih item in Model.CekTarihs.OrderByDescending(x => x.Gun).Reverse().Take(5).ToList())
+            {
+
+                if (item.Gun < 7)
+                {
+                    if (item.Gun == -1)
+                    {
+                        <tr style="background-color:#ffdede">
+                            <th>@item.Cek.CekNo</th>
+                            <th>@item.Cek.YapilanIs.SirketAdi</th>
+                            <th>@item.Cek.Tutar</th>
+                            <th>Bugün <a href="/Company/TahsilEt/@item.Cek.ID" class="btn btn-success" style=" margin:3px"> Tahsil Et </a></th>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="background-color:#ffdede">
+                            <th>@item.Cek.CekNo</th>
+                            <th>@item.Cek.YapilanIs.SirketAdi</th>
+                            <th>@item.Cek.Tutar</th>
+                            <th>@(item.Gun+1)</th>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <tr>
+                        <th>@item.Cek.CekNo</th>
+                        <th>@item.Cek.YapilanIs.SirketAdi</th>
+                        <th>@item.Cek.Tutar</th>
+                        <th>@(item.Gun+1)</th>
+
+                    </tr>
+                }
+
+            }
+        }
+
+    </tbody>
+</table>
+
+
+    <button></button>

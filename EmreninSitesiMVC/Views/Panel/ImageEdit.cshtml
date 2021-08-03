@@ -1,0 +1,91 @@
+﻿@model WorkProjectVM
+@{
+    ViewBag.Title = "ImageEdit";
+    Layout = "~/Views/Shared/Panel.cshtml";
+}
+
+<div class="box_ourwork ourwork_muh">
+
+    <img src="@Model.WorkProjects[0].WallPaper" class="build_model" />
+    <div class="ourwork_details">
+        <h3>Bu çalışmamız @Model.WorkProjects[0].ProjectHead Firmasına yapılmıştır.</h3>
+        <p>
+            Teslimat Süresi: @Model.WorkProjects[0].Time<br />
+            Fiyat: @Model.WorkProjects[0].ProcetPrice<br />
+            Açıklama:  @Model.WorkProjects[0].Description .Bu çalışmaya ait daha fazla fotoğraf görmek için <a href="@try
+                {
+                @Model.WorkProjects[0].ImagePaths[0].ImageUrl
+                }
+                catch (Exception)
+                {
+                    
+             
+                }" data-lightbox="@Model.WorkProjects[0].ID"> Tıklayın </a>
+        </p>
+        <div class="mimar_work_images">
+            @for (int i = 1; i < Model.WorkProjects[0].ImagePaths.Count; i++)
+            {
+                <a href="@Model.WorkProjects[0].ImagePaths[i].ImageUrl" data-lightbox="@Model.WorkProjects[0].ID">
+
+                </a>
+            }
+
+        </div>
+    </div>
+</div>
+
+<br />
+
+<br />
+
+@using (Html.BeginForm("ImageEdit", "Panel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(x => x.WorkProjects[0].ID)
+    <div class="col-sm-12">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="text-align:center;">Resim</th>
+                    <th style="text-align:center;">Açıklama</th>
+                    <th style="text-align:center;">Butonlar</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="@Model.WorkProjects[0].WallPaper" style="width:100px;height:auto;border: 5px solid #00ffff" /> Kapak
+                    </td>
+                </tr>
+                @for (int i = 0; i < Model.ImagePaths.Count; i++)
+                {
+
+
+                    <tr>
+                        <td> <br /> <img src="@Model.ImagePaths[i].ImageUrl" style="width:100px;height:auto" /> <br /> </td>
+                        <td><p style="font-weight:bold;">Açıklama</p>@Html.TextBoxFor(x => x.ImagePaths[i].Description, new { placeholder = Model.ImagePaths[i].Description })</td>
+                        <td>@Html.ActionLink("Sil", "DeleteImage", new { imdi = Model.ImagePaths[i].ID, wpid = Model.WorkProjects[0].ID }, new { @class = "btn btn-danger" })</td>
+                        <td>@Html.ActionLink("Kapak Yap", "WallPaper", new { imdi = Model.ImagePaths[i].ImageUrl, wpid = Model.WorkProjects[0].ID }, new { @class = "btn btn-warning " })</td>
+                    </tr>
+
+                }
+
+
+
+            </tbody>
+        </table>
+    </div>
+    <div>
+        @Html.ActionLink("Önceki Sayfaya Dön", "UpdateWorkProject", new { id = Model.WorkProjects[0].ID }, new { @class = "btn btn-info " })
+    </div>
+    <br />
+    <button class="btn btn-danger">
+        Düzenlemeyi Kaydet
+    </button>
+}
+
+
+
+
+

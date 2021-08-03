@@ -1,0 +1,157 @@
+﻿@model YapilanIs
+@{decimal a = 0;
+    decimal z = 0;
+    decimal g = 0;
+    decimal p = 0; }
+
+{
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>@Model.SirketAdi</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+
+            }
+
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h3>@ViewBag.Message</h3>
+        <div class="container">
+            <table class="table table-hover">
+                <tr>
+                    <th>Şirket Adı:</th>
+                    <td>@Model.SirketAdi</td>
+                </tr>
+                <tr>
+                    <th>Açıklama :</th>
+                    <td>@Model.Aciklama</td>
+                </tr>
+                <tr>
+                    <th>Kar :</th>
+                    <td>@Model.Kar</td>
+                </tr>
+                <tr>
+                    <th>Maliyet :</th>
+                    <td>
+                        @foreach (Maliyet item in Model.Maliyets)
+                        {
+                            @(item.Aciklama +"=>"+ item.ToplamMaliyet + "=>" + item.CreatedTime.ToString("yyyy/MM/dd"))<br />
+                            z += item.ToplamMaliyet;
+                        }
+                    </td>
+                    <td> @z </td>
+                </tr>
+                <tr>
+                    <th>iş Durumu:</th>
+                    <td>@Model.IsDurumu</td>
+                </tr>
+                <tr>
+                    <th>Fatura No :</th>
+                    <td>@Model.FaturaNo</td>
+                    <th>Fatura Tutar</th>
+                    <td>@Model.FaturaFiyat</td>
+                    <th>Fatura Açıklama:</th>
+                    <td>@Model.FaturaAcıklama</td>
+                </tr>
+                <tr>
+                    <th>Hakedis No :</th>
+                    <td>@Model.HakedisNo</td>
+                    <th>Hakedis Tutar:</th>
+                    <td>@Model.HakedisFiyat</td>
+                </tr>
+                <tr>
+                    <th>Çek/Senet :</th>
+                    <td>
+                        @if (Model.Cek != null)
+                        {
+                            foreach (Cek item in Model.Cek)
+                            {
+                                if (item.CekSenet == CekSenet.Cek)
+                                {
+                                    if (item.TahsilDurumu == TahsilDurumu.Alındı)
+                                    {
+
+                                        <p style="display:inline-block;">(Ç) </p> @(item.Tutar +" -- "+ item.AlisTarihi.ToString("yyyy/MM/dd") + " -- " + item.TahsilatTarihi.ToString("yyyy/MM/dd")) <i class="fas fa-check" style="color:lawngreen"></i><br />
+                                        p += item.Tutar;
+                                    }
+                                    else
+                                    {
+                                        <p style="display:inline-block;">(Ç) </p> @(item.Tutar +" -- "+ item.AlisTarihi.ToString("yyyy/MM/dd") + " -- " + item.TahsilatTarihi.ToString("yyyy/MM/dd")) <i class="fas fa-times" style="color:red"></i><br />
+                                        g += item.Tutar;
+                                    }
+                                }
+                                else
+                                {
+                                    if (item.TahsilDurumu == TahsilDurumu.Alındı)
+                                    {
+
+                                        <p style="display:inline-block;">(S) </p> @(item.Tutar +" -- "+ item.AlisTarihi.ToString("yyyy/MM/dd") + " -- " + item.TahsilatTarihi.ToString("yyyy/MM/dd")) <i class="fas fa-check" style="color:lawngreen"></i><br />
+                                        p += item.Tutar;
+                                    }
+                                    else
+                                    {
+                                        <p style="display:inline-block;">(S) </p> @(item.Tutar +" -- "+ item.AlisTarihi.ToString("yyyy/MM/dd") + " -- " + item.TahsilatTarihi.ToString("yyyy/MM/dd")) <i class="fas fa-times" style="color:red"></i><br />
+                                        g += item.Tutar;
+                                    }
+                                }
+
+                            }
+                        }
+
+                    </td>
+                </tr>
+                <tr>
+                    <th>Alınan Ödeme Listesi:</th>
+                    <td>
+                        @if (Model.YapilanIsOdemes != null)
+                        {
+                            foreach (YapilanIsOdeme item in Model.YapilanIsOdemes)
+                            {
+                                @(item.Odeme +" "+ item.CreatedTime.ToString("yyyy/MM/dd"))<br />
+                                a += item.Odeme;
+                            }
+                        }
+                    </td>
+                    <td style="background-color:#dbffe0">
+                        @(a+p)
+                    </td>
+                    <th>Kalan Alınacak Ödeme</th>
+                    <td style="background-color:#ffeded">
+                        @(Model.FaturaFiyat - a - p)
+                    </td>
+                </tr>
+                <tr>
+                    <th>Ödeme Türü</th>
+                    <td>
+                        @Model.OdemeSekli
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,169 @@
+﻿@model WorkProjectVM
+
+@try
+{
+    if (Model.WorkProjects[0].CategoryID == 2)
+    {
+
+        <div class='swiper-container' id='swmim'>
+            <div class='swiper-wrapper' id='mim'>
+                @for (int z = 0; z < Model.WorkProjects.Count; z++)
+                {
+                    <div class='swiper-slide'>
+                        <div class="box_ourwork ourwork_mim">
+
+                            <img src="@Model.WorkProjects[z].WallPaper" class="build_model" />
+                            <div class="ourwork_details">
+                                <h3>Bu çalışmamız @Model.WorkProjects[z].ProjectHead Firmasına yapılmıştır.</h3>
+                                <p>
+                                    Teslimat Süresi: @Model.WorkProjects[z].Time<br />
+                                    Fiyat: @Model.WorkProjects[z].ProcetPrice<br />
+                                    Açıklama:  @Model.WorkProjects[z].Description .Bu çalışmaya ait daha fazla fotoğraf görmek için <a href="@Model.WorkProjects[z].ImagePaths[0].ImageUrl" data-lightbox="@Model.WorkProjects[z].ID"> Tıklayın </a>
+                                </p>
+                                <div class="mimar_work_images">
+                                    @for (int i = 1; i < Model.WorkProjects[z].ImagePaths.Count; i++)
+                                    {
+                                        <a href="@Model.WorkProjects[z].ImagePaths[i].ImageUrl" data-lightbox="@Model.WorkProjects[z].ID" data-title="@Model.WorkProjects[z].ImagePaths[i].Description">
+
+                                        </a>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <br />
+            <div class='swiper-pagination'></div>
+            <br />
+            <br />
+        </div>
+
+
+    }
+    else if (Model.WorkProjects[0].CategoryID == 3)
+    {
+        <div class="swiper-container" id="swmut">
+            <div class="swiper-wrapper">
+                @foreach (WorkProject item in Model.WorkProjects)
+                {
+                    <div class="swiper-slide">
+                        <div class="box_ourwork ourwork_muh">
+
+                            <img src="@item.WallPaper" class="build_model" />
+                            <div class="ourwork_details">
+                                <h3>Bu çalışmamız @item.ProjectHead Firmasına yapılmıştır.</h3>
+                                <p>
+                                    Teslimat Süresi:@item.Time<br />
+                                    Fiyat: @item.ProcetPrice<br />
+                                    Açıklama: @item.Description <a href="@item.ImagePaths[0].ImageUrl" data-lightbox="@item.ID"> Tıklayın </a>
+
+                                </p>
+                            </div>
+                            <div class="mimar_work_images">
+                                @for (int i = 1; i < item.ImagePaths.Count; i++)
+                                {
+                                    <a href="@item.ImagePaths[i].ImageUrl" data-lightbox="@item.ID" data-title="@item.ImagePaths[i].Description">
+                                    </a>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <!-- Add Pagination -->
+            <br />
+            <div class="swiper-pagination"></div>
+            <br />
+            <br />
+        </div>
+    }
+    else
+    {
+        <div class="swiper-container" id="swmuh">
+            <div class="swiper-wrapper">
+                @foreach (WorkProject item in Model.WorkProjects)
+                {
+                    <div class="swiper-slide">
+                        <div class="box_ourwork ourwork_muh">
+
+                            <img src="@item.WallPaper" class="build_model" />
+                            <div class="ourwork_details">
+                                <h3>Bu çalışmamız @item.ProjectHead Firmasına yapılmıştır.</h3>
+                                <p>
+                                    Teslimat Süresi:@item.Time<br />
+                                    Fiyat: @item.ProcetPrice<br />
+                                    Açıklama: @item.Description <a href="@item.ImagePaths[0].ImageUrl" data-lightbox="@item.ID"> Tıklayın </a>
+
+                                </p>
+                            </div>
+                            <div class="mimar_work_images">
+                                @for (int i = 1; i < item.ImagePaths.Count; i++)
+                                {
+                                    <a href="@item.ImagePaths[i].ImageUrl" data-lightbox="@item.ID" data-title="@item.ImagePaths[i].Description">
+                                    </a>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <!-- Add Pagination -->
+            <br />
+            <div class="swiper-pagination"></div>
+            <br />
+            <br />
+        </div>
+    }
+<script>
+
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        // init: false,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        breakpoints: {
+            640: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+            },
+            768: {
+                slidesPerView: 2,
+                spaceBetween: 40,
+            },
+            1024: {
+                slidesPerView: 2,
+                spaceBetween: 50,
+            },
+            1366: {
+                slidesPerView: 3,
+                spaceBetween: 50,
+            },
+            1500: {
+                slidesPerView: 3,
+                spaceBetween: 50,
+            },
+        }
+    });
+</script>
+}
+catch (Exception)
+{
+
+
+}
+
+
+
+

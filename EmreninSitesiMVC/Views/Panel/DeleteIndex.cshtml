@@ -1,0 +1,98 @@
+﻿@model WorkProjectVM
+@{
+    ViewBag.Title = "DeleteIndex";
+    Layout = "~/Views/Shared/Panel.cshtml";
+}
+
+<!--Kategorilerin ayarlamaları-->
+<div class="form-group">
+    <label>Kategori</label>
+    @foreach (Category item in Model.Categories)
+    {
+        <div class="col-sm-3">
+            @Html.ActionLink(item.CategoryName, "DeleteIndex", new { id = item.ID }, new { @class = "btn btn-primary" })
+        </div>
+    }
+
+
+    <div class="col-sm-3">
+        @Html.ActionLink("Hepsini Listele", "DeleteIndex", new { id = default(int?) }, new { @class = "btn btn-primary" })
+    </div>
+    <div class="col-sm-3">
+        @Html.ActionLink("Yeni Proje", "AddNewProject", null, new { @class = "btn btn-primary" })
+    </div>
+    <div class="col-sm-3">
+        @Html.ActionLink("Aktif Projeler","Index", null , new { @class = "btn btn-primary" })
+    </div>
+    @using (Html.BeginForm("EleteIndex", "Panel", FormMethod.Get))
+    {
+        <div>
+            @Html.TextBox("search")<input type="submit" value="Arama" />
+        </div>
+    }
+
+</div>
+
+<!--Ürünlerin Listelenmesi-->
+<div class="col-sm-12">
+    <table class="table table-hover" id="tab1">
+        <thead>
+            <tr>
+                <th style="text-align:center;">Kategorisi</th>
+                <th style="text-align:center;">Kapak Fotoğrafı</th>
+                <th style="text-align:center;">Firma Adı</th>
+                <th style="text-align:center;">Fiyat</th>
+                <th style="text-align:center;">Açıklaması</th>
+                <th style="text-align:center;">Fotoğrafları</th>
+                <th style="text-align:center;">Butonlar</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (WorkProject item in Model.WorkProjects)
+            {
+                <tr>
+                    <td style="margin-left: auto; margin-right: auto;">@item.Category.CategoryName</td>
+                    <td style="margin-left: auto; margin-right: auto;"><img src="@item.WallPaper" alt="" style="width:70px;height:auto;" /></td>
+                    <td style="margin-left: auto; margin-right: auto;">@item.ProjectHead</td>
+                    <td style="margin-left: auto; margin-right: auto;">@item.ProcetPrice</td>
+                    <td style="margin-left: auto; margin-right: auto;">@item.Description</td>
+                    <td style="margin-left: auto; margin-right: auto;">
+
+                        @if (item != null)
+                        {
+                            foreach (ImagePath image in item.ImagePaths)
+                            {
+                                <div class="col-sm-1">
+                                    <a href="@image.ImageUrl" data-lightbox="@image.WorkProjectID"><img src="@image.ImageUrl" alt="" width="20" height="20" title="@image.Description" /></a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Resim Yok</p>
+                        }
+
+                    </td>
+                    <td style="margin-left: auto; margin-right: auto;">
+                        <div>
+                            @Html.ActionLink("Geri Yükle", "GetActive", new { id = item.ID }, new { @class = "btn btn-success" })
+                        </div>
+                        <br />
+                        <div>
+                            @Html.ActionLink("Düzenle", "UpdateWorkProject", new { id = item.ID }, new { @class = "btn btn-warning", id = "btnAll" })
+                        </div>
+                        <br />
+                        <div>
+                            @Html.ActionLink("Sil", "DeleteProject", new { id = item.ID }, new { @class = "btn btn-danger" })
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@Html.ActionLink("Oturumu Kapat", "LogOut", null, new { @class = "btn btn-primary" })
+

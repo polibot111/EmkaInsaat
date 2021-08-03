@@ -1,0 +1,168 @@
+﻿@model CekVM
+@{
+    ViewBag.Title = "Cek";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+    decimal? z = 0;
+    decimal? d = 0;
+    string[] monthNames = (new System.Globalization.CultureInfo("tr-TR")).DateTimeFormat.MonthNames;
+}
+
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("Cek", "Company", FormMethod.Get))
+{
+    <label style="margin:3px">Yıl:</label>
+    <select class="btn btn-info dropdown-toggle" name="yil" id="yil" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 5; i++)
+        {
+            <option value="@(2021+i)">@(2021+i)</option>
+        }
+    </select>
+    <label style="margin:3px">Ay:</label>
+    <select class="btn btn-info dropdown-toggle" name="ay" id="ay" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 12; i++)
+        {
+            <option value="@(i+1)">@monthNames[i]</option>
+        }
+    </select>
+    <label style="margin:3px">Hangi Tarih:</label>
+    <select class="btn btn-info dropdown-toggle" name="tur" id="tur" style="margin:10px 5px 10px 0; ">
+        <option value="1">Alış Tarihi</option>
+        <option value="2">Tahsilat Tarihi</option>
+    </select>
+    <button class="btn btn-primary">Tarih Ayarla</button>
+}
+
+
+<div style="margin:20px ;">
+    <table id="myTable" width="100%">
+        <thead>
+            <tr>
+                <th>Çek/Senet No - Şirket Adı</th>
+                <th>AlisTarihi</th>
+                <th>Tahsilat Tarihi</th>
+                <th>Çek Tutarı</th>
+                <th>Türü</th>
+                <th>Tahsil Et /Güncelle / Sil</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Ceks.Count != 0)
+            {
+                foreach (Cek item in Model.Ceks)
+                {
+                    if (item.TahsilDurumu == TahsilDurumu.Alındı)
+                    {
+                        z += item.Tutar;
+                        <tr background-color: #bbffb7;>
+                            <td>@(item.CekNo + " " + item.Sirket)</td>
+                            <td>@item.AlisTarihi.ToString("dd/MM/yyyy")</td>
+                            <td>@item.TahsilatTarihi.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Tutar</td>
+                            <td>@item.CekSenet.ToString()</td>
+                            <td>
+                                <a href="/Company/UpdateCek/@item.ID" class="btn btn-primary" style=" margin:3px">Güncelle</a>
+
+                                <a href="/Company/DeleteCek/@item.ID " class="btn btn-danger" style=" margin:3px">Sil</a> <br />
+
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        d += item.Tutar;
+                        <tr>
+                            <td>@(item.CekNo + " " + item.Sirket)</td>
+                            <td>@item.AlisTarihi.ToString("dd/MM/yyyy")</td>
+                            <td>@item.TahsilatTarihi.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Tutar</td>
+                            <td>@item.CekSenet.ToString()</td>
+                            <td>
+                                <a href="/Company/UpdateCek/@item.ID" class="btn btn-primary" style=" margin:3px">Güncelle</a>
+
+                                <a href="/Company/DeleteCek/@item.ID " class="btn btn-danger" style=" margin:3px">Sil</a> <br />
+                                <a href="/Company/TahsilEt/@item.ID " class="btn btn-success" style=" margin:3px"> Tahsil Et </a>
+
+                            </td>
+                        </tr>
+                    }
+
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Tahsil Edilen Tutar : @z </th>
+                <th>Ödenmesi Beklenen Tutar: @d </th>
+
+            </tr>
+        </tfoot>
+    </table>
+
+    <div id="duzenleme">
+        <button id="eklebuton" class="btn btn-primary"> Çek/Senet Ekle </button>
+        <div id="guncelle">
+
+        </div>
+        <div id="ekle">
+            <h2 style="color:#007ee5;">Ekleme Sayfası</h2>
+            @using (Html.BeginForm("Cek", "Company", FormMethod.Post))
+            {
+                <div>
+                    <label>İş Seçin</label>
+                    <br />
+                    <select class="btn btn-info dropdown-toggle" name="id" id="id">
+                        <option value="0">İş Seçin</option>
+                        @foreach (YapilanIs item in Model.YapilanIss)
+                        {
+                            <option value="@item.ID">@(item.SirketAdi + " " + item.Aciklama)</option>
+                        }
+                    </select>
+                    <br />
+                    <br />
+                    <div>
+                        <label>Türünü Seçin</label><br />
+                        @Html.DropDownListFor(x => x.Cek.CekSenet, new SelectList(Enum.GetValues(typeof(CekSenet))), "Tür Seçin", new { @style = "padding:5px;", @class = "btn btn-warning dropdown-toggle" })
+                    </div>
+                    <br />
+                    <div>
+                        <label>Numarası</label>
+                        @Html.TextBoxFor(x => x.Cek.CekNo, new { @class = "form-control" })
+                    </div>
+                    <br />
+                    <div>
+                        <label>Alım Tarihi</label>
+                        @Html.TextBoxFor(x => x.Cek.AlisTarihi, new { @class = "form-control", @type = "date" })
+                    </div>
+                    <br />
+                    <div>
+                        <label>Tahsilat Tarihi</label>
+                        @Html.TextBoxFor(x => x.Cek.TahsilatTarihi, new { @type = "date", @class = "form-control" })
+                    </div>
+                    <br />
+                    <div>
+                        <label>Odenme</label>
+                        @Html.TextBoxFor(x => x.Cek.Tutar, new { @class = "form-control", @type = "number", @min = "0" })
+                    </div>
+
+                    <br />
+                    <div>
+                        <button class="btn btn-primary">Tabloya Ekle</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $("#eklebuton").click(function () {
+                $("#guncelle").hide("fast");
+                $("#ekle").toggle("fast");
+            });
+        });
+    </script>
+
+</div>

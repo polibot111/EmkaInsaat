@@ -1,0 +1,71 @@
+﻿@model SirketVM
+@{
+    ViewBag.Title = "SamimiyetTablosu";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+    decimal a = 0;
+    decimal b = 0;
+    decimal c = 0;
+    string[] monthNames = (new System.Globalization.CultureInfo("tr-TR")).DateTimeFormat.MonthNames;
+}
+
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("SamimiyetTablosu", "Company", FormMethod.Get))
+{
+    <label style="margin:3px">Yıl:</label>
+    <select class="btn btn-info dropdown-toggle" name="yil" id="yil" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 5; i++)
+        {
+            <option value="@(2021+i)">@(2021+i)</option>
+        }
+    </select>
+    <label style="margin:3px">Ay:</label>
+    <select class="btn btn-info dropdown-toggle" name="ay" id="ay" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 12; i++)
+        {
+            <option value="@(i+1)">@monthNames[i]</option>
+        }
+    </select>
+    <button class="btn btn-primary">Tarih Ayarla</button>
+}
+
+
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." class="form-control" title="Type in a name" style="width:50%; margin:10px 0 10px 0;">
+<table id="myTable" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Müşteri</th>
+            <th>Hakedis Tutar</th>
+            <th>Fatura Tutar</th>
+            <th>Fark</th>
+            <th>Açıklama</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (YapilanIs item in Model.YapilanIss)
+        {
+            a += item.HakedisFiyat;
+            b += item.FaturaFiyat;
+            c += item.HakedisFiyat - item.FaturaFiyat;
+            <tr>
+                <td>@item.SirketAdi</td>
+                <td>@item.HakedisFiyat</td>
+                <td>@item.FaturaFiyat</td>
+                <td>@(item.HakedisFiyat - item.FaturaFiyat)</td>
+                <td>@item.FaturaAcıklama</td>
+            </tr>
+
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td>Total Hakedis Fiyat : @a</td>
+            <td>Total Fatura Fiyat : @b</td>0
+            <td>Total Fark : @c</td>
+        </tr>
+    </tfoot>
+</table>
+

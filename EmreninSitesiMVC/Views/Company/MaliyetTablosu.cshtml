@@ -1,0 +1,158 @@
+﻿@model MaliyetVM
+@{
+    ViewBag.Title = "MaliyetTablosu";
+    Layout = "~/Views/Shared/_Sirket.cshtml";
+    decimal d = 0;
+    decimal? a = 0;
+    string[] monthNames = (new System.Globalization.CultureInfo("tr-TR")).DateTimeFormat.MonthNames;
+}
+
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("MaliyetTablosu", "Company", FormMethod.Get))
+{
+    <label style="margin:3px">Yıl:</label>
+    <select class="btn btn-info dropdown-toggle" name="yil" id="yil" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 5; i++)
+        {
+            <option value="@(2021+i)">@(2021+i)</option>
+        }
+    </select>
+    <label style="margin:3px">Ay:</label>
+    <select class="btn btn-info dropdown-toggle" name="ay" id="ay" style="margin:10px 5px 10px 0; ">
+        <option value="0">Hepsi</option>
+        @for (Int16 i = 0; i < 12; i++)
+        {
+            <option value="@(i+1)">@monthNames[i]</option>
+        }
+    </select>
+    <button class="btn btn-primary">Tarih Ayarla</button>
+}
+
+
+<div>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." class="form-control" title="Type in a name" style="width:50%; margin:10px 0 10px 0;">
+    <table id="myTable" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Açıklama</th>
+                <th>Şirket</th>
+                <th>Kalan Ödeme</th>
+                <th>Borç</th>
+                <th>Yapılan Ödeme</th>
+                <th>Butonlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Maliyet item in Model.Maliyets)
+            {
+                a += item.ToplamMaliyet;
+
+                if (item.OdemeDurumu == OdemeDurumu.Odendi)
+                {
+                    <tr style=" background-color: #bbffb7">
+                        <td>@item.Aciklama</td>
+                        <td>@(item.YapilanIs.SirketAdi + " => " + item.YapilanIs.Aciklama)</td>
+                        <td>0</td>
+                        <td>@item.ToplamMaliyet</td>
+                        <td><button data-toggle="collapse" data-target="#Odeme_@item.ID">Ödemeleri Göster</button></td>
+                        <td>
+                            <a href="/Company/UpdateMal/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
+
+                            <a href="/Company/DeleteMal/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
+                        </td>
+                    </tr>
+                    <tr id="Odeme_@item.ID" class="collapse">
+                        <td>@item.Aciklama</td>
+                        <td>
+                            @foreach (MaliyetOdeme z in item.MaliyetOdemes)
+                            {
+                                @(z.Odeme + " => " + z.CreatedTime.ToString("yyyy/MM/dd")) <a href="/Company/MDeleteOdeme/@z.ID" class="btn btn-danger" style=" margin:3px"><i class="far fa-times-circle"></i></a>
+                                d += z.Odeme;
+                            }
+                        </td>
+                    </tr>
+                }
+                else if (item.OdemeDurumu == OdemeDurumu.Odenmedi)
+                {
+                    <tr style=" background-color: #ffbaba">
+                        <td>@item.Aciklama</td>
+                        <td>@(item.YapilanIs.SirketAdi + " => " + item.YapilanIs.Aciklama)</td>
+                        <td>@(item.ToplamMaliyet - item.MaliyetOdemes.Sum(x=>x.Odeme)) <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="@item.ID" /> <button onclick="CallPartial(@item.ID)" class="btn btn-info">Öde</button></td>
+                        <td>@item.ToplamMaliyet</td>
+                        <td><button data-toggle="collapse" data-target="#Odeme_@item.ID">Ödemeleri Göster</button></td>
+                        <td>
+                            <a href="/Company/UpdateMal/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
+
+                            <a href="/Company/DeleteMal/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
+                        </td>
+                    </tr>
+                    <tr id="Odeme_@item.ID" class="collapse">
+                        <td>@item.Aciklama</td>
+                        <td>
+                            @foreach (MaliyetOdeme z in item.MaliyetOdemes)
+                            {
+                                @(z.Odeme + " => " + z.CreatedTime.ToString("yyyy/MM/dd"))
+                                d += z.Odeme;
+                            }
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr style=" background-color: #ffffaf">
+                        <td>@item.Aciklama</td>
+                        <td>@(item.YapilanIs.SirketAdi + " => " + item.YapilanIs.Aciklama)</td>
+                        <td>@(item.ToplamMaliyet - item.MaliyetOdemes.Sum(x=>x.Odeme)) <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="@item.ID" /> <button onclick="CallPartial(@item.ID)" class="btn btn-info">Öde</button></td>
+                        <td>@item.ToplamMaliyet</td>
+                        <td><button data-toggle="collapse" data-target="#Odeme_@item.ID">Ödemeleri Göster</button></td>
+                        <td>
+                            <a href="/Company/UpdateMal/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
+
+                            <a href="/Company/DeleteMal/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
+                        </td>
+                    </tr>
+                    <tr id="Odeme_@item.ID" class="collapse">
+                        <td>@item.Aciklama</td>
+                        <td>
+                            @foreach (MaliyetOdeme z in item.MaliyetOdemes)
+                            {
+                                @(z.Odeme + " => " + z.CreatedTime.ToString("yyyy/MM/dd")) <a href="/Company/MDeleteOdeme/@z.ID" class="btn btn-danger" style=" margin:3px"><i class="far fa-times-circle"></i></a>
+                                d += z.Odeme;
+                            }
+                        </td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Total Maliyet: @a</th>
+                <th>Yapılan Ödeme: @d</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+
+<script>
+    var CallPartial = function (idi) {
+        var deg = $(`#${idi}`).val();
+        $.ajax({
+            type: "POST",
+            url: "/Company/MaliyetOde",
+            data: {
+                id: idi,
+                deger: deg
+            },
+            success: function (response) {
+                location.reload();
+
+            }
+        });
+
+    }
+</script>
