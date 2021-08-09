@@ -53,59 +53,7 @@
                     a += item.Kar;
                     b += item.Maliyets.Sum(x => x.ToplamMaliyet);
 
-                    if (item.OdemeDurumu == OdemeDurumu.Odendi)
-                    {
-                        <tr style=" background-color: #bbffb7">
-                            <td>@item.SirketAdi</td>
-                            <td>@item.Aciklama</td>
-                            <td>@item.Kar</td>
-                            <td>@item.Maliyets.Sum(x => x.ToplamMaliyet)</td>
-                            <td><button class="btn btn-info" onclick="window.open('@Url.Action("AyrintiPenceresi", "Company",new { id =$"{item.ID}"})')"> Ayrıntılar </button></td>
-                            <td>
-                                <a href="/Company/UpdateYapilanIs/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
-
-                                <a href="/Company/DeleteIs/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
-
-                                <button data-toggle="collapse" data-target="#form_@item.ID" class=" btn btn-default">Maliyet/Ödeme Ekle</button>
-                            </td>
-                        </tr>
-                        <tr id="form_@item.ID" class="collapse">
-                            <td>@item.SirketAdi</td>
-                            <th> Maliyet Açıklama : <input type="text" style="width:80px;" id="form_maliyet_aciklama_@item.ID" /></th>
-                            <th> Maliyet Borç : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_borc_@item.ID" /></th>
-                            <th></th>
-                            <th> İlk Ödeme : <input type="number" min="0" step=".01" style="width:55px;" placeholder="0" id="form_maliyet_odeme_@item.ID" /> <button style="margin:4px;" onclick="CallPartial(@item.ID)" class="btn btn-primary"> Maliyet </button></th>
-                            <th> Ödeme Ekle : <input type="number" step=".01" min="0" style="width:55px;" id="form_odeme_tutari_@item.ID" /><button style="margin:4px;" onclick="OdemeEkle(@item.ID)" class="btn btn-success">Ödeme</button></th>
-                        </tr>
-                    }
-                    else if (item.OdemeDurumu == OdemeDurumu.Odenmedi)
-                    {
-                        <tr style=" background-color: #ffbaba;">
-                            <td>@item.SirketAdi</td>
-                            <td>@item.Aciklama</td>
-                            <td>@item.Kar</td>
-                            <td>@item.Maliyets.Sum(x => x.ToplamMaliyet)</td>
-                            <td><button class="btn btn-info" onclick="window.open('@Url.Action("AyrintiPenceresi", "Company",new { id =$"{item.ID}"})')"> Ayrıntılar </button></td>
-                            <td>
-                                <a href="/Company/UpdateYapilanIs/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
-
-                                <a href="/Company/DeleteIs/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a>
-                                <br />
-
-                                <button data-toggle="collapse" data-target="#form_@item.ID" class=" btn btn-default">Maliyet/Ödeme Ekle</button>
-                            </td>
-                        </tr>
-                        <tr id="form_@item.ID" class="collapse">
-                            <td>@item.SirketAdi</td>
-                            <th> Maliyet Açıklama : <input type="text" style="width:80px;" id="form_maliyet_aciklama_@item.ID" /></th>
-                            <th> Maliyet Borç : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_borc_@item.ID" /></th>
-                            <th></th>
-                            <th> İlk Ödeme : <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="form_maliyet_odeme_@item.ID" /> <button style="margin:4px;" onclick="CallPartial(@item.ID)" class="btn btn-primary"> Maliyet </button></th>
-                            <th> Ödeme Ekle : <input type="number" step=".01" min="0" style="width:55px;" id="form_odeme_tutari_@item.ID" /><button style="margin:4px;" onclick="OdemeEkle(@item.ID)" class="btn btn-success">Ödeme</button></th>
-                        </tr>
-                    }
-                    else
-                    {
+                    
                         <tr style=" background-color: #ffffaf;">
                             <td>@item.SirketAdi</td>
                             <td>@item.Aciklama</td>
@@ -129,7 +77,7 @@
                             <th> İlk Ödeme : <input step=".01" type="number" min="0" style="width:55px;" placeholder="0" id="form_maliyet_odeme_@item.ID" /> <button style="margin:4px;" onclick="CallPartial(@item.ID)" class="btn btn-primary"> Maliyet </button></th>
                             <th> Ödeme Ekle : <input type="number" step=".01" min="0" style="width:55px;" id="form_odeme_tutari_@item.ID" /><button style="margin:4px;" onclick="OdemeEkle(@item.ID)" class="btn btn-success">Ödeme</button></th>
                         </tr>
-                    }
+                    
 
                 }
             }

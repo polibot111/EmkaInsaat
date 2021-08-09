@@ -18,7 +18,7 @@ namespace EmreninSitesiMVC.Models.Project.DAL.StrategyPattern
             AppUser au = new AppUser();
             au.UserName = "admin";
             au.Password = DantexCrypt.Crypt("123emre");
-            au.Email = "e.emniyet@emkainsaat.com";
+            au.Email = "kchnfrkn@gmail.com";
 
             context.AppUsers.Add(au);
 

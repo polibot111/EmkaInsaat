@@ -842,7 +842,7 @@ namespace EmreninSitesiMVC.Controllers
         {
             try
             {
-                EAVM ea = new EAVM
+                ea = new EAVM
                 {
                     SingleEA = _db.EABorcs.Find(id),
 
@@ -1156,7 +1156,7 @@ namespace EmreninSitesiMVC.Controllers
                     z.YapilanIs = _db.YapilanIss.Find(id);
                     z.YapilanIs.Kar -= z.ToplamMaliyet;
                 }
-                if (m.Maliyet.MaliyetOdemes.Sum(x => Convert.ToInt32(x.Odeme)) != 0)
+                if (m.Maliyet.MaliyetOdemes.Sum(x => Convert.ToDecimal(x.Odeme)) != 0)
                 {
                     for (int i = 0; i < z.MaliyetOdemes.Count; i++)
                     {

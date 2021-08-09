@@ -49,58 +49,6 @@
             {
                 a += item.ToplamMaliyet;
 
-                if (item.OdemeDurumu == OdemeDurumu.Odendi)
-                {
-                    <tr style=" background-color: #bbffb7">
-                        <td>@item.Aciklama</td>
-                        <td>@(item.YapilanIs.SirketAdi + " => " + item.YapilanIs.Aciklama)</td>
-                        <td>0</td>
-                        <td>@item.ToplamMaliyet</td>
-                        <td><button data-toggle="collapse" data-target="#Odeme_@item.ID">Ödemeleri Göster</button></td>
-                        <td>
-                            <a href="/Company/UpdateMal/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
-
-                            <a href="/Company/DeleteMal/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
-                        </td>
-                    </tr>
-                    <tr id="Odeme_@item.ID" class="collapse">
-                        <td>@item.Aciklama</td>
-                        <td>
-                            @foreach (MaliyetOdeme z in item.MaliyetOdemes)
-                            {
-                                @(z.Odeme + " => " + z.CreatedTime.ToString("yyyy/MM/dd")) <a href="/Company/MDeleteOdeme/@z.ID" class="btn btn-danger" style=" margin:3px"><i class="far fa-times-circle"></i></a>
-                                d += z.Odeme;
-                            }
-                        </td>
-                    </tr>
-                }
-                else if (item.OdemeDurumu == OdemeDurumu.Odenmedi)
-                {
-                    <tr style=" background-color: #ffbaba">
-                        <td>@item.Aciklama</td>
-                        <td>@(item.YapilanIs.SirketAdi + " => " + item.YapilanIs.Aciklama)</td>
-                        <td>@(item.ToplamMaliyet - item.MaliyetOdemes.Sum(x=>x.Odeme)) <input type="number" step=".01" min="0" style="width:55px;" placeholder="0" id="@item.ID" /> <button onclick="CallPartial(@item.ID)" class="btn btn-info">Öde</button></td>
-                        <td>@item.ToplamMaliyet</td>
-                        <td><button data-toggle="collapse" data-target="#Odeme_@item.ID">Ödemeleri Göster</button></td>
-                        <td>
-                            <a href="/Company/UpdateMal/@item.ID" class="btn btn-success" style=" margin:3px">Güncelle</a>
-
-                            <a href="/Company/DeleteMal/@item.ID" class="btn btn-danger" style=" margin:3px">Sil</a><br />
-                        </td>
-                    </tr>
-                    <tr id="Odeme_@item.ID" class="collapse">
-                        <td>@item.Aciklama</td>
-                        <td>
-                            @foreach (MaliyetOdeme z in item.MaliyetOdemes)
-                            {
-                                @(z.Odeme + " => " + z.CreatedTime.ToString("yyyy/MM/dd"))
-                                d += z.Odeme;
-                            }
-                        </td>
-                    </tr>
-                }
-                else
-                {
                     <tr style=" background-color: #ffffaf">
                         <td>@item.Aciklama</td>
                         <td>@(item.YapilanIs.SirketAdi + " => " + item.YapilanIs.Aciklama)</td>
@@ -123,8 +71,7 @@
                             }
                         </td>
                     </tr>
-                }
-
+                
             }
         </tbody>
         <tfoot>

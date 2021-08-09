@@ -10,9 +10,9 @@ namespace Project.COMMON.Tools
 {
     public static class MailSender
     {
-
+        //42652emre
         
-        public static void Send(string receiver,string password= "42652emre", string body="Test Mesajıdır",string subject = "E-Mail Testi",string sender = "emkamailrobot@gmail.com")
+        public static void Send(string receiver,string password= "mavcbbivfzsxyxwf", string body="Test Mesajıdır",string subject = "E-Mail Testi",string sender = "emkamailrobot@gmail.com")
         {
             
             MailAddress senderMail = new MailAddress(sender);
